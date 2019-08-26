@@ -1,0 +1,118 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+  <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+  <div id="map"></div>
+
+  <!-- Javascript -->
+  <script src="js/vendor/modernizr-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+          integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+          crossorigin=""></script>
+<!--  <script src="js/region/auvergne-rhone-alpes.js" type="text/javascript"></script>-->
+<!--  <script src="js/region/bourgogne-franche-comte.js" type="text/javascript"></script>-->
+<!--  <script src="js/region/bretagne.js" type="text/javascript"></script>-->
+
+  <script src="https://unpkg.com/osmtogeojson@2.2.12/osmtogeojson.js"></script>
+
+  <script type="text/javascript">
+      let regions = {
+          "auvergne-rhone-alpes" : "Auvergne-Rhône-Alpes",
+          "bourgogne-franche-comte" : "Bourgogne-Franche-Comté",
+          "bretagne" : "Bretagne",
+          "centre-val-de-loire" : "Centre-Val de Loire",
+          "corse" : "Corse",
+          "grand-est" : "Grand Est",
+          "hauts-de-france" : "Hauts-de-France",
+          "ile-de-france" : "Île-de-France",
+          "normandie" : "Normandie",
+          "nouvelle-aquitaine" : "Nouvelle-Aquitaine",
+          "occitanie" : "Occitanie",
+          "pays-de-la-loire" : "Pays de la Loire",
+          "provence-alpes-cote-azur" : "Provence-Alpes-Côte d'Azur",
+      };
+
+      let map = L.map('map').setView([46.866, 0.242], 6);
+
+      let openStreetMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors</a>',
+          maxZoom: 19
+      }).addTo(map);
+
+      function getOverpassUrl(region) {
+          let overpassApiUrl = 'http://overpass-api.de/api/interpreter?data=[out:json][timeout:300];(relation["name"="' + region + '"]["boundary"="administrative"]["admin_level"="4"];);out body geom;';
+          return overpassApiUrl;
+      }
+
+      // regions.forEach(function (key, value) {
+      //     let requestUrl = getOverpassUrl(value);
+      //     $.get(requestUrl, function (osmDataAsJson) {
+      //         // let resultAsGeojson = osmtogeojson(osmDataAsJson);
+      //         let mapLayer = L.geoJson(osmDataAsJson);
+      //         mapLayer.addTo(map);
+      //     });
+      // });
+
+      for (const [key, value] of Object.entries(regions)) {
+          console.log(key, value);
+          $.get("geoJSON/"+key+".geojson", function (region) {
+              // let resultAsGeojson = osmtogeojson(osmDataAsJson);
+              let mapLayer = L.geoJson(region, {
+                  filter: function(feature, layer) {
+                      return "Point" !== feature.geometry.type;
+                  }
+              });
+              mapLayer.addTo(map);
+          });
+      }
+
+      // let baseMap = {
+      //     "Rendu OpenStreetMap" : openStreetMap
+      // };
+      //
+      // let overlaysMaps = {
+      //     "Région Auvergne-Rhône-Alpes" : auvergneRhoneAlpeLayer,
+      //     "Région Bourgogne-Franche-Comté" : bourgneFrancheComteLayer,
+      //     "Région Bretagne" : bretagneLayer,
+      // };
+      //
+      // L.control.layers(baseMap, overlaysMaps,{ collapsed: false }).addTo(map);
+      // L.control.scale({imperial: false}).addTo(map);
+
+  </script>
+
+</body>
+
+</html>
