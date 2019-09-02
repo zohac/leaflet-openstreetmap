@@ -41,14 +41,10 @@
   <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
           integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
           crossorigin=""></script>
-<!--  <script src="js/region/auvergne-rhone-alpes.js" type="text/javascript"></script>-->
-<!--  <script src="js/region/bourgogne-franche-comte.js" type="text/javascript"></script>-->
-<!--  <script src="js/region/bretagne.js" type="text/javascript"></script>-->
-
   <script src="https://unpkg.com/osmtogeojson@2.2.12/osmtogeojson.js"></script>
 
   <script type="text/javascript">
-      let regions = {
+      const regions = {
           "auvergne-rhone-alpes" : "Auvergne-Rhône-Alpes",
           "bourgogne-franche-comte" : "Bourgogne-Franche-Comté",
           "bretagne" : "Bretagne",
@@ -64,12 +60,16 @@
           "provence-alpes-cote-azur" : "Provence-Alpes-Côte d'Azur",
       };
 
-      let map = L.map('map').setView([46.866, 0.242], 6);
+      const map = L.map('map').setView([46.866, 0.242], 6);
 
-      let openStreetMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      const openStreetMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
           attribution: 'Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors</a>',
           maxZoom: 19
       }).addTo(map);
+
+      const baseMap = {
+          "Rendu OpenStreetMap" : openStreetMap
+      };
 
       function getOverpassUrl(region) {
           let overpassApiUrl = 'http://overpass-api.de/api/interpreter?data=[out:json][timeout:300];(relation["name"="' + region + '"]["boundary"="administrative"]["admin_level"="4"];);out body geom;';
@@ -85,31 +85,40 @@
       //     });
       // });
 
+      let overlaysMaps = {};
       for (const [key, value] of Object.entries(regions)) {
-          console.log(key, value);
-          $.get("geoJSON/"+key+".geojson", function (region) {
+          $.get(`geoJSON/${key}.geojson`, function (region) {
               // let resultAsGeojson = osmtogeojson(osmDataAsJson);
-              let mapLayer = L.geoJson(region, {
+              const mapLayer = L.geoJson(region, {
                   filter: function(feature, layer) {
                       return "Point" !== feature.geometry.type;
                   }
               });
               mapLayer.addTo(map);
+
+              overlaysMaps[`Région ${value}`] = mapLayer;
           });
       }
 
-      // let baseMap = {
-      //     "Rendu OpenStreetMap" : openStreetMap
-      // };
+      // $.get(`geoJSON/regions.geojson`, function (region) {
+      //     // let resultAsGeojson = osmtogeojson(osmDataAsJson);
+      //     let mapLayer = L.geoJson(region, {
+      //         filter: function(feature, layer) {
+      //             return "Point" !== feature.geometry.type;
+      //         }
+      //     });
+      //     mapLayer.addTo(map);
       //
-      // let overlaysMaps = {
-      //     "Région Auvergne-Rhône-Alpes" : auvergneRhoneAlpeLayer,
-      //     "Région Bourgogne-Franche-Comté" : bourgneFrancheComteLayer,
-      //     "Région Bretagne" : bretagneLayer,
-      // };
+      //     const overlaysMaps = {
+      //         "regions" : mapLayer,
+      //     };
       //
-      // L.control.layers(baseMap, overlaysMaps,{ collapsed: false }).addTo(map);
-      // L.control.scale({imperial: false}).addTo(map);
+      //     L.control.layers(baseMap, overlaysMaps,{ collapsed: false }).addTo(map);
+      //
+      // });
+      console.log(overlaysMaps);
+      L.control.layers(baseMap, overlaysMaps,{ collapsed: false }).addTo(map);
+      L.control.scale({imperial: false}).addTo(map);
 
   </script>
 
