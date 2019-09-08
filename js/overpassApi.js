@@ -41,17 +41,16 @@
     let overlaysMaps = {};
     let requestQueue = [];
 
-    for (const [key, value] of Object.entries(regions)) {
-      const request = $.get(`geoJSON/${key}.geojson`, function (region) {
-        // let resultAsGeojson = osmtogeojson(osmDataAsJson);
-        const mapLayer = L.geoJson(region, {
-          filter: function (feature, layer) {
-            return "Point" !== feature.geometry.type;
-          }
-        });
-        mapLayer.addTo(map);
+    function getOverpassUrl(region) {
+        return 'http://overpass-api.de/api/interpreter?data=[out:json][timeout:300];(relation["name"="' + region + '"]["boundary"="administrative"]["admin_level"="4"];);out body geom;';
+    }
 
-        overlaysMaps[`Région ${value}`] = mapLayer;
+    for (const [key, value] of Object.entries(regions)) {
+      const requestUrl = getOverpassUrl(value);
+      const request = $.get(requestUrl, function (osmDataAsJson) {
+        const resultAsGeojson = osmtogeojson(osmDataAsJson);
+        const mapLayer = L.geoJson(resultAsGeojson);
+        mapLayer.addTo(map);
       }).promise();
       requestQueue.push(request);
     }
@@ -64,7 +63,7 @@
     }).catch(() => {
       // all requests finished but one or more failed
       console.log('error');
-    });
+    })
 
   });
   // The rest of the code goes here!
