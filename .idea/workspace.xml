@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="114b44ac-a499-47a7-8ad2-d183dc7c9c7d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,13 +34,14 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/geoJSON" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zohac\Documents\Development\www\leaflet-openstreetmap\geoJSON" />
       <recent name="C:\Users\zohac\Documents\Development\www\leaflet-openstreetmap\js" />
     </key>
   </component>
@@ -77,7 +76,9 @@
       <workItem from="1567871630485" duration="3373000" />
       <workItem from="1567956734985" duration="456000" />
       <workItem from="1567958709725" duration="1125000" />
-      <workItem from="1567963490876" duration="2515000" />
+      <workItem from="1567963490876" duration="2603000" />
+      <workItem from="1568458352996" duration="39000" />
+      <workItem from="1568458847507" duration="9541000" />
     </task>
     <servers />
   </component>
